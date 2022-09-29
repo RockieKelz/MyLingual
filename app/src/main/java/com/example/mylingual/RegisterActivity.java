@@ -3,6 +3,8 @@ package com.example.mylingual;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mylingual.data.Database;
+import com.example.mylingual.data.UserAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,13 +22,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText usernameEditText, emailEditText, passwordEditText, passwordConfirm;
     private Button registerButton;
     private TextView loginLink;
     private FirebaseAuth mAuth;
-    private ProgressBar progressBar;
     private FirebaseUser currentUser;
 
     @Override
@@ -46,12 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerNewUser();
-            }
-        });
+        registerButton.setOnClickListener(v -> registerNewUser());
 
         loginLink.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -75,8 +72,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
     private void registerNewUser() {
-        // show the visibility of progress bar to show loading
-        progressBar.setVisibility(View.VISIBLE);
         // get the inputted values into Strings
         String username = usernameEditText.getText().toString();
         String email = emailEditText.getText().toString().trim();
@@ -114,7 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
             passwordEditText.requestFocus();
             return;
         }
-        else if (password2 != password) {
+        else if (!password2.equals(password)) {
             passwordEditText.setError("Passwords mismatch. Please re-enter your password");
             passwordEditText.requestFocus();
             return;
@@ -122,31 +117,26 @@ public class RegisterActivity extends AppCompatActivity {
 
         //register new user
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                progressBar.setVisibility(View.GONE);
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        addDataToFirestore();
+                        // Sign in success, update UI with the signed-in user's information
+                        Toast.makeText(getApplicationContext(),
+                                        "Registration successful!",
+                                        Toast.LENGTH_SHORT)
+                                .show();
+                        Log.d("Success", "createUserWithEmail:success");
 
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Toast.makeText(getApplicationContext(),
-                                    "Registration successful!",
-                                    Toast.LENGTH_SHORT)
-                            .show();
-                    Log.d("Success", "createUserWithEmail:success");
-
-
-                }
-                else {
-                    // If registration sign in fails....
-                    // try regular login in with the email and password
-                    mAuth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // hide the progress bar
-                                        progressBar.setVisibility(View.GONE);
+                        Intent i = new Intent(RegisterActivity.this,
+                                MainActivity.class);
+                        startActivity(i);
+                    }
+                    else {
+                        // If registration sign in fails....
+                        // try regular login in with the email and password
+                        mAuth.signInWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
                                         // Sign in success
                                         Intent i = new Intent(RegisterActivity.this,
                                                 MainActivity.class);
@@ -159,12 +149,15 @@ public class RegisterActivity extends AppCompatActivity {
                                                         Toast.LENGTH_LONG)
                                                 .show();
                                         Log.w("Failure",
-                                                "createUserWithEmail:failure", task.getException());
+                                                "createUserWithEmail:failure", task1.getException());
                                     }
-                                }
-                            });
-                }
-            }
-        });
+                                });
+                    }
+                });
+    }
+    private void addDataToFirestore() {
+        UserAccount currentUser = new UserAccount(usernameEditText.getText().toString());
+        currentUser.SetId(mAuth.getUid());
+        Database.AddUser(currentUser);
     }
 }
