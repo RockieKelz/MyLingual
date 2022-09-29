@@ -53,13 +53,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_password"
         app:layout_constraintVertical_bias="0.2" />
+
     <TextView
         android:id="@+id/login_register_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="24dp"
         android:text="Already have an account? "
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -80,6 +81,25 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/login_register_text"
         app:layout_constraintStart_toEndOf="@id/login_register_text" />
+
+    <TextView
+        android:id="@+id/login_recover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="64dp"
+        android:clickable="true"
+        android:text="@string/forgot_password_underline"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login_register_text"
+        app:layout_constraintVertical_bias="0.218" />
+
     <ProgressBar
         android:id="@+id/loading"
         android:layout_width="wrap_content"
