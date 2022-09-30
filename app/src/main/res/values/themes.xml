@@ -2,12 +2,12 @@
     <!-- Base application theme. -->
     <style name="Theme.MyLingual" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/btn_color_primary</item>
-        <item name="colorPrimaryVariant">@color/text_color_primary</item>
+        <item name="colorPrimary">@color/dark_blue</item>
+        <item name="colorPrimaryVariant">@color/light_blue</item>
         <item name="colorOnPrimary">#8ED2F3</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/text_color_secondary</item>
-        <item name="colorSecondaryVariant">@color/accent</item>
+        <item name="colorSecondary">@color/dark_blue</item>
+        <item name="colorSecondaryVariant">@color/lightest_blue_gray</item>
         <item name="colorOnSecondary">@color/black</item>
 
         <!-- Status bar color. -->

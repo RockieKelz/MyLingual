@@ -11,4 +11,7 @@
     <string name="login_underline"><u>Login</u></string>
     <string name="signup_underline"><u>Sign Up</u></string>
     <string name="forgot_password_underline"><u>Forgot Password?</u></string>
+    <string name="already_have_an_account">Already have an account? </string>
+    <string name="re_enter_password">Re-Enter Password</string>
+    <string name="don_t_have_an_account">Don\'t have an account? </string>
 </resources>
