@@ -71,15 +71,15 @@ public class LoginActivity extends AppCompatActivity {
 
         // Validate fields
         if (email.isEmpty()) {
-            Toast.makeText(getApplicationContext(),
-                            "Please enter email",
-                            Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.INVISIBLE);
+            emailEditText.setError("Please enter email");
+            emailEditText.requestFocus();
             return;
         }
         if (password.isEmpty()) {
-            Toast.makeText(getApplicationContext(),
-                            "Please enter password",
-                            Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.INVISIBLE);
+            passwordEditText.setError("Please enter password");
+            passwordEditText.requestFocus();
             return;
         }
         //attempt sign in
