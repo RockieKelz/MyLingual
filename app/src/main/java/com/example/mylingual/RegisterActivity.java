@@ -46,7 +46,8 @@ public class RegisterActivity extends AppCompatActivity {
         loginLink = findViewById(R.id.register_login_link);
         //initialize firebase instance
         mAuth = FirebaseAuth.getInstance();
-
+        // TODO: Delete before publishing
+        mAuth.signOut();
 
         registerButton.setOnClickListener(v -> registerNewUser());
 
@@ -85,13 +86,13 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         if (email.isEmpty()) {
-            usernameEditText.setError("Email is empty");
-            usernameEditText.requestFocus();
+            emailEditText.setError("Email is empty");
+            emailEditText.requestFocus();
             return;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            usernameEditText.setError("Enter a valid email address");
-            usernameEditText.requestFocus();
+            emailEditText.setError("Enter a valid email address");
+            emailEditText.requestFocus();
             return;
         }
         if (password.isEmpty()) {
@@ -105,13 +106,13 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         if (password2.isEmpty()) {
-            passwordEditText.setError("Re-Enter the password");
-            passwordEditText.requestFocus();
+            passwordConfirm.setError("Re-Enter the password");
+            passwordConfirm.requestFocus();
             return;
         }
         else if (!password2.equals(password)) {
-            passwordEditText.setError("Passwords mismatch. Please re-enter your password");
-            passwordEditText.requestFocus();
+            passwordConfirm.setError("Passwords mismatch. Please re-enter your password");
+            passwordConfirm.requestFocus();
             return;
         }
 
