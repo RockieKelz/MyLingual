@@ -6,6 +6,7 @@
         <item>@font/pt_sans</item>
         <item>@font/pt_sans_bold</item>
         <item>@font/roboto</item>
+        <item>@font/roboto_bold</item>
         <item>@font/roboto_condensed_regular</item>
     </array>
 </resources>

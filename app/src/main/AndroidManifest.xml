@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.mylingual">
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Permissions for internet -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Permission for camera -->
@@ -9,25 +8,33 @@
 
     <application
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyLingual"
-        tools:targetApi="31"
-        android:dataExtractionRules="@xml/data_extraction_rules">
+        tools:targetApi="31">
         <activity
-            android:name=".LoginActivity"
-            android:theme="@style/Theme.MyLingual.NoActionBar"
-            android:exported="false" />
-        <activity
-            android:name=".RegisterActivity"
-            android:theme="@style/Theme.MyLingual.NoActionBar"
-            android:exported="true">
+            android:name=".ChooseLanguage"
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyLingual.NoActionBar" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MyLingual.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,9 +44,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MyLingual.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.MyLingual.NoActionBar"></activity>
 
         <meta-data
             android:name="preloaded_fonts"
