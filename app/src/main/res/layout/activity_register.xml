@@ -34,7 +34,6 @@
         android:paddingEnd="10dp"
         android:minHeight="48dp"
         android:background="@color/light_gray"
-        android:text="@string/username"
         android:fontFamily="@font/pt_sans"
         android:letterSpacing=".08"
         android:textStyle="bold"

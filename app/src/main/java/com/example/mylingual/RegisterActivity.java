@@ -120,7 +120,6 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        addDataToFirestore();
                         // Sign in success, update UI with the signed-in user's information
                         Toast.makeText(getApplicationContext(),
                                         "Registration successful!",
@@ -129,7 +128,8 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d("Success", "createUserWithEmail:success");
 
                         Intent i = new Intent(RegisterActivity.this,
-                                MainActivity.class);
+                                ChooseLanguage.class);
+                        i.putExtra("username", usernameEditText.getText().toString());
                         startActivity(i);
                     }
                     else {
@@ -156,9 +156,5 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
     }
-    private void addDataToFirestore() {
-        UserAccount currentUser = new UserAccount(usernameEditText.getText().toString());
-        currentUser.SetId(mAuth.getUid());
-        Database.AddUser(currentUser);
-    }
+
 }
