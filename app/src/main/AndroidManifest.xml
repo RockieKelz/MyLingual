@@ -45,7 +45,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MyLingual.NoActionBar"></activity>
+            android:theme="@style/Theme.MyLingual.NoActionBar"/>
 
         <meta-data
             android:name="preloaded_fonts"

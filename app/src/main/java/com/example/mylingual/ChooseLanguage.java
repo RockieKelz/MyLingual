@@ -20,17 +20,18 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class ChooseLanguage extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
-    private String userName;
-    private String primaryLanguage;
-    private String secondaryLanguage;
+    private String userName, primaryLanguage, secondaryLanguage, primaryLangTag, secondaryLangTag;
     private DatabaseReference databaseReference;
     private ArrayList<CharSequence> spinnerList;
     private ArrayAdapter<CharSequence> adapter;
+    private final HashMap<String,String> map = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +61,11 @@ public class ChooseLanguage extends AppCompatActivity {
         fromSpinner.setAdapter(adapter);
         toSpinner.setAdapter(adapter);
 
-        //Save selected languages
+        //Save selected languages & tags
         saveButton.setOnClickListener(v -> {
             primaryLanguage = fromSpinner.getSelectedItem().toString();
             secondaryLanguage = toSpinner.getSelectedItem().toString();
+            getLangKey(primaryLanguage,secondaryLanguage);
 
             addDataToFirestore();
 
@@ -78,7 +80,8 @@ public class ChooseLanguage extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren())
-                    spinnerList.add(Objects.requireNonNull(dataSnapshot.getValue()).toString());
+                    map.put(dataSnapshot.getKey(), Objects.requireNonNull(dataSnapshot.getValue()).toString());
+                spinnerList.addAll(map.values());
                 spinnerList.sort(Comparator.comparing(CharSequence::toString));
                 adapter.notifyDataSetChanged();
             }
@@ -89,13 +92,24 @@ public class ChooseLanguage extends AppCompatActivity {
             }
         });
     }
+    public void getLangKey(String prime, String second){
+        for (Map.Entry<String,String> entry: map.entrySet()){
+            if (Objects.equals(entry.getValue(), prime))
+                primaryLangTag = entry.getKey();
+            if (Objects.equals(second, entry.getValue()))
+                secondaryLangTag = entry.getKey();
+        };
+
+    }
 
     //add user's information to firestore
     private void addDataToFirestore() {
-        UserAccount currentUser = new UserAccount(userName);
-        currentUser.SetId(mAuth.getUid());
-        currentUser.SetPrimaryLanguage(primaryLanguage);
-        currentUser.SetSecondaryLanguage(secondaryLanguage);
+        Map<String, Object> currentUser = new HashMap<>();
+        currentUser.put("primaryLanguage", primaryLanguage);
+        currentUser.put("secondaryLanguage", secondaryLanguage);
+        currentUser.put("primaryLangTag", primaryLangTag);
+        currentUser.put("secondaryLangTag", secondaryLangTag);
+        currentUser.put("userName", userName);
         Database.AddUser(currentUser);
     }
 }

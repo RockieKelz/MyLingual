@@ -3,19 +3,13 @@ package com.example.mylingual.data;
 public class UserAccount {
 
     // Properties
-    public String id;
-    public String userName;
-    public String primaryLanguage;
-    public String secondaryLanguage;
+    private String id;
+    private String userName;
+    private String primaryLanguage;
+    private String secondaryLanguage;
 
     // Constructors
     public UserAccount(){}
-
-    public UserAccount(String _userName){
-        userName = _userName;
-        SetPrimaryLanguage("eng");
-        SetSecondaryLanguage("span");
-    }
 
     // Accessors
     public String GetId() { return id; }
