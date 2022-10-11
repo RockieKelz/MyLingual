@@ -34,19 +34,12 @@ import java.util.Objects;
  */
 public class HomeFragment extends Fragment {
     private Button micButton, keyboard, camera;
-    private TextView outputBox;
+    private TextView outputBox, fromLangText, toLangText;
     private EditText inputBox;
     private ImageButton volButton, saveButton, settingsButton;
     public String primaryLanguage, secondaryLanguage, primaryLangTag, secondaryLangTag, originalText;
     private FirebaseAuth user;
     public Translator translator;
-
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +61,8 @@ public class HomeFragment extends Fragment {
         settingsButton = HomeView.findViewById(R.id.main_set);
         inputBox = HomeView.findViewById(R.id.main_inbox);
         outputBox = HomeView.findViewById(R.id.main_outbox);
+        fromLangText = HomeView.findViewById(R.id.main_from_text);
+        toLangText = HomeView.findViewById(R.id.main_to_text);
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String userID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -80,6 +75,10 @@ public class HomeFragment extends Fragment {
                 primaryLangTag = documentSnapshot.getString("primaryLangTag");
                 secondaryLanguage = documentSnapshot.getString("secondaryLanguage");
                 secondaryLangTag = documentSnapshot.getString("secondaryLangTag");
+
+                //set the text for to/from language boxes
+                toLangText.setText(secondaryLanguage.toString());
+                fromLangText.setText(primaryLanguage.toString());
             }
         });
 
