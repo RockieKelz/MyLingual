@@ -47,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
         //initialize firebase instance
         mAuth = FirebaseAuth.getInstance();
         // TODO: Delete before publishing
-        mAuth.signOut();
+        //mAuth.signOut();
 
         registerButton.setOnClickListener(v -> registerNewUser());
 

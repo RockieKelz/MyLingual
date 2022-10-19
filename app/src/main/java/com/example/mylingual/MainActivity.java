@@ -7,6 +7,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,7 +21,13 @@ public class MainActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment()).commit();
-
+        if (getIntent().getExtras() != null){
+            HomeFragment homeFragment = new HomeFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("speechInput", getIntent().getExtras().get("speechInput").toString());
+            bundle.putSerializable("buttonCase", getIntent().getSerializableExtra("buttonCase"));
+            homeFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, homeFragment).commit();
+        } else { getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment()).commit(); }
     }
 }
