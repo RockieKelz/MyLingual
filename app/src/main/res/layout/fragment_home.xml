@@ -15,8 +15,8 @@
 
     <ImageView
         android:id="@+id/main_logo"
-        android:layout_width="376dp"
-        android:layout_height="82dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,8 +24,8 @@
         app:layout_constraintBottom_toTopOf="@+id/main_lang_contain"/>
     <ImageButton
         android:id="@+id/main_set"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="45sp"
+        android:layout_height="45sp"
         android:src="@mipmap/ic_cog_foreground"
         android:background="@color/light_blue"
         app:layout_constraintTop_toTopOf="parent"
@@ -102,7 +102,7 @@
     <EditText
         android:id="@+id/main_inbox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginLeft="4pt"
         android:layout_marginRight="4pt"
         android:background="@color/light_gray"
@@ -114,10 +114,12 @@
         android:keepScreenOn="true"
         android:letterSpacing=".08"
         android:minHeight="180dp"
+        android:maxHeight="300dp"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
         android:paddingEnd="10dp"
         android:textColor="@color/blue"
+        android:textColorHint="@color/gray"
         android:textSize="18sp"
         android:textStyle="bold"
         android:clickable="true"
@@ -139,37 +141,37 @@
         app:layout_constraintTop_toBottomOf="@+id/main_inbox"
         app:layout_constraintVertical_bias="0.308">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_mic_btn"
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/round_button"
             android:foreground="@mipmap/ic_mic_foreground"
-            android:enabled="false"/>
+            />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_keyboard_btn"
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/round_button"
             android:foreground="@mipmap/ic_keyboard_foreground"
-            android:enabled="true"/>
+            android:foregroundTint="@color/dark_blue"/>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_camera_btn"
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:background="@drawable/round_button"
             android:foreground="@mipmap/ic_camera_foreground"
-            android:enabled="false"/>
+            />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <TextView
         android:id="@+id/main_outbox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginLeft="4pt"
         android:layout_marginRight="4pt"
         android:background="@color/light_gray"
@@ -183,8 +185,8 @@
         android:textColor="@color/blue"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_button_contain" />
 
@@ -205,4 +207,18 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@id/main_outbox"
         app:layout_constraintTop_toBottomOf="@id/main_vol" />
+    <ProgressBar
+        android:id="@+id/loading_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="64dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

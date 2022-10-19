@@ -17,5 +17,10 @@
     <style name="Theme.MyLingual.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/light_blue</item>
+        <item name="android:textColor">@color/dark_blue</item>
+        <item name="android:fontFamily">@font/pt_sans_bold</item>
     </style>
+    <style name="Theme.MyLingual.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.MyLingual.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
