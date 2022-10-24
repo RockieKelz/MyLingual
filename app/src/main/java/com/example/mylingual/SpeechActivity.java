@@ -1,33 +1,26 @@
 package com.example.mylingual;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mylingual.data.ButtonCase;
-import com.example.mylingual.data.Database;
+import com.example.mylingual.data.FBDatabase;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Objects;
 
 public class SpeechActivity extends AppCompatActivity {
     private static final Integer RecordAudioRequestCode = 1;
@@ -58,6 +51,7 @@ public class SpeechActivity extends AppCompatActivity {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
         //go back to main screen
@@ -124,10 +118,9 @@ public class SpeechActivity extends AppCompatActivity {
 
             @Override
             public void onResults(Bundle results) {
-                listening = false;
                 ArrayList<String> data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 speechInput = data.get(0);
-                Database.SetSpeechInput(speechInput);
+                FBDatabase.SetSpeechInput(speechInput);
                 Intent i = new Intent(SpeechActivity.this,
                         MainActivity.class);
                 i.putExtra("speechInput", speechInput);

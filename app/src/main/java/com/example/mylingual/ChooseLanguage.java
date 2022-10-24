@@ -9,8 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.example.mylingual.data.Database;
-import com.example.mylingual.data.UserAccount;
+import com.example.mylingual.data.FBDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -110,6 +109,6 @@ public class ChooseLanguage extends AppCompatActivity {
         currentUser.put("primaryLangTag", primaryLangTag);
         currentUser.put("secondaryLangTag", secondaryLangTag);
         currentUser.put("userName", userName);
-        Database.AddUser(currentUser);
+        FBDatabase.AddUser(currentUser);
     }
 }

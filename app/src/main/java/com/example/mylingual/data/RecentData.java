@@ -13,10 +13,11 @@ public class RecentData extends SQLiteOpenHelper {
         private static final int DATABASE_VERSION = 1;
         public static final String DATABASE_NAME = "recent_database";
         public static final String TABLE_NAME = "recent translations";
-        public static final String PRIMARY_LANG = "_tag";
-        public static final String ORIGINAL_TEXT = "name";
-        public static final String SECONDARY_LANG = "age";
-        public static final String TRANSLATED_TEXT = "gender";
+        public static final String COLUMN_ID = "_id";
+        public static final String PRIMARY_LANG = "lang";
+        public static final String ORIGINAL_TEXT = "text";
+        public static final String SECONDARY_LANG = "langs";
+        public static final String TRANSLATED_TEXT = "ttext";
 
         public RecentData(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);

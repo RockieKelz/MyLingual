@@ -2,14 +2,10 @@ package com.example.mylingual;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-import static java.security.AccessController.getContext;
-
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.BlendMode;
-import android.graphics.BlendModeColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
@@ -23,13 +19,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.core.graphics.BlendModeColorFilterCompat;
-import androidx.core.graphics.BlendModeCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.mylingual.data.ButtonCase;
 import com.example.mylingual.data.RecentData;
+import com.example.mylingual.data.ViewModal;
+import com.example.mylingual.data.room_db.RoomEntity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,7 +36,10 @@ import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
+import java.util.TimeZone;
 
 public class HomeFragment extends Fragment {
     private Button keyboard, camera, micButton;
@@ -48,6 +50,7 @@ public class HomeFragment extends Fragment {
     public Translator translator;
     private ProgressBar progressBar;
     private ButtonCase activeButton = ButtonCase.Keyboard;
+    private ViewModal viewModal;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,9 @@ public class HomeFragment extends Fragment {
         progressBar =(ProgressBar) HomeView.findViewById(R.id.loading_model);
         progressBar.setMax(100);
         progressBar.setProgress(0 );
+
+        viewModal = ViewModelProviders.of(this).get(ViewModal.class);
+
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String userID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
@@ -149,6 +155,13 @@ public class HomeFragment extends Fragment {
             startActivity(new Intent(getContext(), LoginActivity.class));
             requireActivity().finish();
         });
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_star, null));
+                saveTranslation("saved", primaryLanguage, originalText, secondaryLanguage, outputBox.getText().toString());
+            }
+        });
         return HomeView;
     }
     public void prepareModel() {
@@ -168,7 +181,10 @@ public class HomeFragment extends Fragment {
         });
     }
     private void translateLanguage() {
-        translator.translate(originalText).addOnSuccessListener(s -> outputBox.setText(s)).addOnFailureListener(e -> outputBox.setText(new StringBuilder().append(getString(R.string.error)).append(e.getMessage()).toString()));
+        translator.translate(originalText).addOnSuccessListener(s -> {
+                outputBox.setText(s);
+                saveTranslation("recent", primaryLanguage, originalText, secondaryLanguage, outputBox.getText().toString());
+        }).addOnFailureListener(e -> outputBox.setText(new StringBuilder().append(getString(R.string.error)).append(e.getMessage()).toString()));
     }
     private void buttonCase (ButtonCase buttonCase){
         switch (buttonCase)
@@ -199,7 +215,7 @@ public class HomeFragment extends Fragment {
                 break;
         }
     }
-    private void saveToDB() {
+    private void saveTranslation() {
         SQLiteDatabase database = new RecentData (this.getContext()).getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(RecentData.ORIGINAL_TEXT, originalText.toString());
@@ -207,5 +223,15 @@ public class HomeFragment extends Fragment {
         values.put(RecentData.SECONDARY_LANG, secondaryLanguage.toString());
         values.put(RecentData.TRANSLATED_TEXT, outputBox.getText().toString());
         database.insert(RecentData.TABLE_NAME, null, values);
+    }
+    private void saveTranslation(String type, String primary, String origin, String second, String translate) {
+        RoomEntity entity = new RoomEntity(type, getTimeStamp(),primary, origin, second, translate);
+        viewModal.insert(entity);
+        Toast.makeText(this.getContext(), "Saved Translation to Database" , Toast.LENGTH_SHORT).show();
+    }
+    public String getTimeStamp(){
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD'T'HH:mm:ss'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("PST"));
+        return sdf.format(new Date());
     }
 }

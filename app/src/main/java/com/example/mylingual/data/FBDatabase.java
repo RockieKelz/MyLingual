@@ -1,11 +1,8 @@
 package com.example.mylingual.data;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -13,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 
-public class Database {
+public class FBDatabase {
     public static String speechInput;
     public static void AddUser(Map<String, Object> currentUser){
 
