@@ -9,13 +9,20 @@
     app:cardCornerRadius="8dp">
 
     <LinearLayout
-        android:id="@+id/idLLCourse"
+        android:id="@+id/recent_translation_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:orientation="vertical">
 
-        <!--text view for our course name-->
+        <TextView
+            android:id="@+id/recent_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Type"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
         <TextView
             android:id="@+id/recent_primary"
             android:layout_width="match_parent"
@@ -24,8 +31,6 @@
             android:text="Primary"
             android:textColor="@color/black"
             android:textSize="15sp" />
-
-        <!--text view for our course duration-->
         <TextView
             android:id="@+id/recent_second"
             android:layout_width="match_parent"
@@ -34,8 +39,6 @@
             android:text="Secondary"
             android:textColor="@color/black"
             android:textSize="15sp" />
-
-        <!--text view for our course description-->
         <TextView
             android:id="@+id/recent_original"
             android:layout_width="match_parent"

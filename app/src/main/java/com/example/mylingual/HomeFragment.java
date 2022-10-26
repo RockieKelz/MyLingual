@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mylingual.data.ButtonCase;
 import com.example.mylingual.data.RecentData;
@@ -77,6 +78,8 @@ public class HomeFragment extends Fragment {
         progressBar =(ProgressBar) HomeView.findViewById(R.id.loading_model);
         progressBar.setMax(100);
         progressBar.setProgress(0 );
+
+        viewModal = new ViewModelProvider(this).get(ViewModal.class);
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String userID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();

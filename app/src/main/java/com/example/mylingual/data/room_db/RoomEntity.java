@@ -61,9 +61,12 @@ public class RoomEntity {
 
     public String getTranslated() { return TRANSLATED_TEXT; }
 
-    public void setTRANSLATED_TEXT(String name) {
-        this.TRANSLATED_TEXT = TRANSLATED_TEXT;
-    }
+    public void setTRANSLATED_TEXT(String name) { this.TRANSLATED_TEXT = TRANSLATED_TEXT; }
 
+    public String getType() { return DATA_TYPE; }
+
+    public void setDATA_TYPE(String name) {
+        this.DATA_TYPE = DATA_TYPE;
+    }
 }
 

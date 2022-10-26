@@ -15,8 +15,9 @@ import java.util.List;
 public class RoomRepository {
     private final RoomDAO dao;
     private final LiveData<List<RoomEntity>> allTranslations;
-    private MutableLiveData<List<RoomEntity>> typeResults = new MutableLiveData<>();
+    private final MutableLiveData<List<RoomEntity>> typeResults = new MutableLiveData<>();
 
+    //repository constructor
     public RoomRepository(Application application) {
         RoomDatabase database = RoomDatabase.getInstance(application);
         dao = database.Dao();
@@ -46,6 +47,7 @@ public class RoomRepository {
     public MutableLiveData<List<RoomEntity>> getAllOFTYPETranslations() {
         return typeResults;
     }
+
     //finding a specific type (recent or saved) translation
     public void findTYPETranslations(String name) {
         QueryAllOFTYPETranslations task = new QueryAllOFTYPETranslations(dao);
@@ -114,14 +116,14 @@ public class RoomRepository {
     }
 
     // Async Task to search for a translation type (recent or saved)
-    private static class QueryAllOFTYPETranslations extends AsyncTask <String, Void, LiveData<List<RoomEntity>>> implements com.example.mylingual.data.GetAllOFTYPETranslations {
-        private final RoomDAO dao;
+    private static class QueryAllOFTYPETranslations extends AsyncTask <String, Void, List<RoomEntity>> {
+        private final RoomDAO R_dao;
         private RoomRepository select = null;
-        private QueryAllOFTYPETranslations(RoomDAO dao) { this.dao = dao;}
+        private QueryAllOFTYPETranslations(RoomDAO dao) { this.R_dao = dao;}
 
         @Override
-        protected LiveData<List<RoomEntity>> doInBackground(final String... params) {
-            return dao.findTYPETranslations(params[0]);
+        protected List<RoomEntity> doInBackground(final String... params) {
+            return (List<RoomEntity>) R_dao.findTYPETranslations(params[0]);
         }
         @Override
         public void onPostExecute(List<RoomEntity> resultEntity)

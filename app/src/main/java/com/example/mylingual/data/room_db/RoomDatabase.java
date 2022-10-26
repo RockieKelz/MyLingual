@@ -18,14 +18,14 @@ public abstract class RoomDatabase extends androidx.room.RoomDatabase {
         //check if the instance is null
         if (instance == null) {
             // if the instance is null, create a new instance
-            instance = Room.databaseBuilder(context.getApplicationContext(), RoomDatabase.class, "recent_translations")
+            instance = Room.databaseBuilder(context.getApplicationContext(), RoomDatabase.class, "room_translations")
                             .fallbackToDestructiveMigration()
                             .addCallback(roomCallback)
                             .build();
         }
         return instance;
     }
-    private static androidx.room.RoomDatabase.Callback roomCallback = new androidx.room.RoomDatabase.Callback() {
+    private static final androidx.room.RoomDatabase.Callback roomCallback = new androidx.room.RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);

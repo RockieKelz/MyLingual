@@ -16,7 +16,7 @@ public class ViewModal extends AndroidViewModel {
     private LiveData<List<RoomEntity>> allTranslations;
     private MutableLiveData<List<RoomEntity>> allTypeTranslations;
 
-
+    //view modal constructor
     public ViewModal(@NonNull Application application) {
         super(application);
         repository = new RoomRepository(application);
@@ -40,12 +40,14 @@ public class ViewModal extends AndroidViewModel {
         repository.deleteAllTranslations();
     }
 
+    //for finding either recent or bookmarked translations
     public void findTYPETranslations(String name) { repository.findTYPETranslations(name); }
 
     public LiveData<List<RoomEntity>> getAllTranslations() {
         return allTranslations;
     }
 
+    //for retrieving either recent or bookmarked translations
     public MutableLiveData<List<RoomEntity>> getAllOFTYPETranslations() {
         return allTypeTranslations;
     }

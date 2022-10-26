@@ -32,6 +32,7 @@ public interface RoomDAO {
     @Query("SELECT * FROM translations ORDER BY id ASC")
     LiveData<List<RoomEntity>> getAllTranslations();
 
+    //looks for specific translation data type
     @Query("SELECT * FROM translations WHERE DATA_TYPE = :dataType")
-    LiveData<List<RoomEntity>> findTYPETranslations(String dataType);
+    List<RoomEntity> findTYPETranslations(String dataType);
 }

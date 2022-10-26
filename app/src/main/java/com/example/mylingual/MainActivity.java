@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId())
                 {
                     case R.id.bottom_nav_recent:
-                        //Intent intent1 = new Intent(MainActivity.this, RecentActivity.class);
-                        //startActivity(intent1, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
+                        Intent intent1 = new Intent(MainActivity.this, RecentActivity.class);
+                        startActivity(intent1, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
                         break;
                     case R.id.bottom_nav_textbook:
                         Intent intent2 = new Intent(MainActivity.this, TextbookActivity.class);
