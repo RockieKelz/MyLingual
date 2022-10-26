@@ -36,5 +36,34 @@ public class RoomEntity {
     public void setId(int id) {
         this.id = id;
     }
+
+    public String getPrimary() {
+        return PRIMARY_LANG;
+    }
+
+    public void setPRIMARY_LANG(String name) {
+        this.PRIMARY_LANG = PRIMARY_LANG;
+    }
+
+    public String getSecondary() {
+        return SECONDARY_LANG;
+    }
+
+    public void setSECONDARY_LANG(String name) {
+        this.SECONDARY_LANG = SECONDARY_LANG;
+    }
+
+    public String getOriginal() { return ORIGINAL_TEXT; }
+
+    public void setORIGINAL_TEXT(String name) {
+        this.ORIGINAL_TEXT = ORIGINAL_TEXT;
+    }
+
+    public String getTranslated() { return TRANSLATED_TEXT; }
+
+    public void setTRANSLATED_TEXT(String name) {
+        this.TRANSLATED_TEXT = TRANSLATED_TEXT;
+    }
+
 }
 
