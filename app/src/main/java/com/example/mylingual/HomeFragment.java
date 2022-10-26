@@ -2,21 +2,13 @@ package com.example.mylingual;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-import android.app.Activity;
-import android.content.Context;
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-
-import android.speech.SpeechRecognizer;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,26 +19,26 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
 
 import com.example.mylingual.data.ButtonCase;
-import com.example.mylingual.data.Database;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.button.MaterialButton;
+import com.example.mylingual.data.RecentData;
+import com.example.mylingual.data.ViewModal;
+import com.example.mylingual.data.room_db.RoomEntity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
 
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
+import java.util.TimeZone;
 
 public class HomeFragment extends Fragment {
     private Button keyboard, camera, micButton;
@@ -54,16 +46,17 @@ public class HomeFragment extends Fragment {
     private EditText inputBox;
     private ImageButton volButton, saveButton, settingsButton;
     public String primaryLanguage, secondaryLanguage, primaryLangTag, secondaryLangTag, originalText;
-    private FirebaseAuth user;
     public Translator translator;
     private ProgressBar progressBar;
     private ButtonCase activeButton = ButtonCase.Keyboard;
+    private ViewModal viewModal;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -81,159 +74,161 @@ public class HomeFragment extends Fragment {
         outputBox = HomeView.findViewById(R.id.main_outbox);
         fromLangText = HomeView.findViewById(R.id.main_from_text);
         toLangText = HomeView.findViewById(R.id.main_to_text);
-        progressBar = HomeView.findViewById(R.id.loading_model);
+        progressBar =(ProgressBar) HomeView.findViewById(R.id.loading_model);
+        progressBar.setMax(100);
+        progressBar.setProgress(0 );
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String userID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         DocumentReference documentReference = database.collection("User_Data").document(userID);
-        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                primaryLanguage = documentSnapshot.getString("primaryLanguage");
-                primaryLangTag = documentSnapshot.getString("primaryLangTag");
-                secondaryLanguage = documentSnapshot.getString("secondaryLanguage");
-                secondaryLangTag = documentSnapshot.getString("secondaryLangTag");
+        documentReference.get().addOnSuccessListener(documentSnapshot -> {
+            primaryLanguage = documentSnapshot.getString("primaryLanguage");
+            primaryLangTag = documentSnapshot.getString("primaryLangTag");
+            secondaryLanguage = documentSnapshot.getString("secondaryLanguage");
+            secondaryLangTag = documentSnapshot.getString("secondaryLangTag");
 
-                //set the text for to/from language boxes
-                toLangText.setText(secondaryLanguage.toString());
-                fromLangText.setText(primaryLanguage.toString());
-                if( getArguments() != null) {
-                    activeButton = (ButtonCase)getArguments().getSerializable("buttonCase");
-                    buttonCase(activeButton);
-                    originalText = getArguments().getString("speechInput");
-                    inputBox.setText(originalText);
-                    prepareModel();
-                }
+            //set the text for to/from language boxes
+            toLangText.setText(secondaryLanguage);
+            fromLangText.setText(primaryLanguage);
+            if( getArguments() != null) {
+                progressBar.setVisibility(View.VISIBLE);
+                activeButton = (ButtonCase)getArguments().getSerializable("buttonCase");
+                buttonCase(activeButton);
+                originalText = getArguments().getString("speechInput");
+                inputBox.setText(originalText);
+                prepareModel();
             }
         });
-
-        inputBox.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                // If the event is a key-down event on the "enter" button
-                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (i == KeyEvent.KEYCODE_ENTER)) {
-                    InputMethodManager inputMethodManager = (InputMethodManager) requireContext().getSystemService(INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(HomeView.getApplicationWindowToken(), 0);
-                    // Perform action on key press
-                    originalText = inputBox.getText().toString().trim();
-                    if (!originalText.equals("")) {
-                        prepareModel();
-                        volButton.setVisibility(View.VISIBLE);
-                        saveButton.setVisibility(View.VISIBLE);
-                    } else {
-                        outputBox.setText("");
-                        volButton.setVisibility(View.INVISIBLE);
-                        saveButton.setVisibility(View.INVISIBLE);
-                    }
-                    return true;
+        inputBox.setOnTouchListener((v, event) -> {
+            activeButton = ButtonCase.Keyboard;
+            buttonCase(activeButton);
+            return false;
+        });
+        inputBox.setOnKeyListener((view, i, keyEvent) -> {
+            // If the event is a key-down event on the "enter" button
+            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (i == KeyEvent.KEYCODE_ENTER)) {
+                InputMethodManager inputMethodManager = (InputMethodManager) requireContext().getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(HomeView.getApplicationWindowToken(), 0);
+                // Perform action on key press
+                originalText = inputBox.getText().toString().trim();
+                if (!originalText.equals("")) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    prepareModel();
+                    volButton.setVisibility(View.VISIBLE);
+                    saveButton.setVisibility(View.VISIBLE);
+                } else {
+                    outputBox.setText("");
+                    volButton.setVisibility(View.INVISIBLE);
+                    saveButton.setVisibility(View.INVISIBLE);
                 }
-                return false;
+                return true;
             }
+            return false;
         });
         keyboard.setSelected(true);
-        keyboard.setOnClickListener(new View.OnClickListener() {
+        keyboard.setOnClickListener(v -> {
+            activeButton = ButtonCase.Keyboard;
+            buttonCase(activeButton);
+            inputBox.requestFocusFromTouch();
+        });
+        micButton.setOnClickListener(view -> {
+            activeButton = ButtonCase.Microphone;
+            buttonCase(activeButton);
+            Intent i = new Intent(new Intent());
+            i.setClass(getActivity(), SpeechActivity.class);
+            requireActivity().startActivity(i);
+        });
+
+        camera.setOnClickListener(view -> {
+            activeButton = ButtonCase.Camera;
+            buttonCase(activeButton);
+
+        });
+
+        settingsButton.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(getContext(), LoginActivity.class));
+            requireActivity().finish();
+        });
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activeButton = ButtonCase.Keyboard;
-                buttonCase(activeButton);
-
-            }
-        });
-        micButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                activeButton = ButtonCase.Microphone;
-                buttonCase(activeButton);
-                Intent i = new Intent(new Intent());
-                i.setClass(getActivity(), SpeechActivity.class);
-                requireActivity().startActivity(i);
-            }
-        });
-
-        camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                activeButton = ButtonCase.Camera;
-                buttonCase(activeButton);
-
-            }
-        });
-
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getContext(), LoginActivity.class));
-                requireActivity().finish();
+                saveButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_star, null));
+                saveTranslation("saved", primaryLanguage, originalText, secondaryLanguage, outputBox.getText().toString());
             }
         });
         return HomeView;
     }
     public void prepareModel() {
         TranslatorOptions options = new TranslatorOptions.Builder()
-                .setSourceLanguage(primaryLangTag.toString())
-                .setTargetLanguage(secondaryLangTag.toString())
+                .setSourceLanguage(primaryLangTag)
+                .setTargetLanguage(secondaryLangTag)
                 .build();
         translator = Translation.getClient(options);
 
         //Download model if it isn't already
-        translator.downloadModelIfNeeded().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                progressBar.setVisibility(View.VISIBLE);
-                //model is ready to use
-                translateLanguage();
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+        translator.downloadModelIfNeeded().addOnSuccessListener(unused -> {
+            //model is ready to use
+            translateLanguage();
+            progressBar.setVisibility(View.INVISIBLE);
+        }).addOnFailureListener(e -> {
 
-            }
         });
     }
     private void translateLanguage() {
-        translator.translate(originalText).addOnSuccessListener(new OnSuccessListener<String>() {
-            @Override
-            public void onSuccess(String s) {
+        translator.translate(originalText).addOnSuccessListener(s -> {
                 outputBox.setText(s);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                outputBox.setText("Error : " + e.getMessage());
-            }
-        });
+                saveTranslation("recent", primaryLanguage, originalText, secondaryLanguage, outputBox.getText().toString());
+        }).addOnFailureListener(e -> outputBox.setText(new StringBuilder().append(getString(R.string.error)).append(e.getMessage()).toString()));
     }
     private void buttonCase (ButtonCase buttonCase){
         switch (buttonCase)
         {
             case Camera:
                 camera.setSelected(true);
-                camera.getForeground().setColorFilter(getResources().getColor(R.color.dark_blue), PorterDuff.Mode.SRC_ATOP);
+                camera.getForeground().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.dark_blue), PorterDuff.Mode.SRC_ATOP));
                 micButton.setSelected(false);
-                micButton.getForeground().setColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP);
+                micButton.getForeground().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP));
                 keyboard.setSelected(false);
-                keyboard.getForeground().setColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP);
+                keyboard.getForeground().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP));
                 break;
             case Microphone:
                 micButton.setSelected(true);
-                micButton.getForeground().setColorFilter(getResources().getColor(R.color.dark_blue), PorterDuff.Mode.SRC_ATOP);
+                micButton.getForeground().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.dark_blue), PorterDuff.Mode.SRC_ATOP));
                 camera.setSelected(false);
-                camera.getForeground().setColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP);
+                camera.getForeground().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP));
                 keyboard.setSelected(false);
-                keyboard.getForeground().setColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP);
+                keyboard.getForeground().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP));
                 break;
             default:
                 keyboard.setSelected(true);
-                keyboard.getForeground().setColorFilter(getResources().getColor(R.color.dark_blue), PorterDuff.Mode.SRC_ATOP);
+                keyboard.getForeground().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.dark_blue), PorterDuff.Mode.SRC_ATOP));
                 camera.setSelected(false);
-                camera.getForeground().setColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP);
+                camera.getForeground().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP));
                 micButton.setSelected(false);
-                micButton.getForeground().setColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP);
+                micButton.getForeground().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP));
                 break;
         }
+    }
+    private void saveTranslation() {
+        SQLiteDatabase database = new RecentData (this.getContext()).getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(RecentData.ORIGINAL_TEXT, originalText.toString());
+        values.put(RecentData.PRIMARY_LANG, primaryLanguage.toString());
+        values.put(RecentData.SECONDARY_LANG, secondaryLanguage.toString());
+        values.put(RecentData.TRANSLATED_TEXT, outputBox.getText().toString());
+        database.insert(RecentData.TABLE_NAME, null, values);
+    }
+    private void saveTranslation(String type, String primary, String origin, String second, String translate) {
+        RoomEntity entity = new RoomEntity(type, getTimeStamp(),primary, origin, second, translate);
+        viewModal.insert(entity);
+        Toast.makeText(this.getContext(), "Saved Translation to Database" , Toast.LENGTH_SHORT).show();
+    }
+    public String getTimeStamp(){
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD'T'HH:mm:ss'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("PST"));
+        return sdf.format(new Date());
     }
 }
