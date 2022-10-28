@@ -215,7 +215,7 @@ public class HomeFragment extends Fragment {
                 break;
         }
     }
-    private void saveTranslation() {
+    public void saveTranslation() {
         SQLiteDatabase database = new RecentData (this.getContext()).getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(RecentData.ORIGINAL_TEXT, originalText.toString());
