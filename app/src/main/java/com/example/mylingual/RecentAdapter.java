@@ -17,7 +17,7 @@ import java.util.List;
 public class RecentAdapter extends RecyclerView.Adapter <RecentAdapter.ViewHolder> {
     private List<RoomEntity> translationList;
     public IconAdapterListener onClickListener;
-    private boolean clicked = false;
+    private boolean clicked;
 
     //initialize & update the translation list to reflect list of recent translations
     public void setTranslationList(List<RoomEntity> translations) {
@@ -55,7 +55,6 @@ public class RecentAdapter extends RecyclerView.Adapter <RecentAdapter.ViewHolde
             translatedText = itemView.findViewById(R.id.recent_translated);
             volume = itemView.findViewById(R.id.rv_vol);
             save = itemView.findViewById(R.id.rv_save);
-
             //initiate on clicks
             volume.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,6 +85,7 @@ public class RecentAdapter extends RecyclerView.Adapter <RecentAdapter.ViewHolde
     public void onBindViewHolder(final ViewHolder holder, final int listPosition) {
 
         TextView primaryView, secondaryLanguageView, originalTextView, translatedTextView;
+        ImageButton saveView;
         primaryView = holder.primaryLanguage;
         primaryView.setText(translationList.get(listPosition).getPrimary());
         secondaryLanguageView = holder.secondaryLanguage;
@@ -94,6 +94,14 @@ public class RecentAdapter extends RecyclerView.Adapter <RecentAdapter.ViewHolde
         originalTextView.setText(translationList.get(listPosition).getOriginal());
         translatedTextView = holder.translatedText;
         translatedTextView.setText(translationList.get(listPosition).getTranslated());
+        saveView = holder.save;
+        clicked = translationList.get(listPosition).getBookmarkedStatus();
+        if(!clicked) {
+            saveView.setBackground(ResourcesCompat.getDrawable(holder.itemView.getResources(), R.mipmap.ic_star_out_foreground, null));
+        } else {
+            saveView.setBackground(ResourcesCompat.getDrawable(holder.itemView.getContext().getResources(), R.mipmap.ic_star_foreground, null));
+        }
+
     }
     //passing the position with the on click
     public interface IconAdapterListener {

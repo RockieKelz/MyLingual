@@ -47,7 +47,7 @@ public class ViewModal extends AndroidViewModel {
     public void findTYPETranslations(String name) { repository.findTYPETranslations(name); }
 
     //for finding either recent or bookmarked translations
-    public void findTranslations(String name) { repository.findTranslations(name); }
+    public void findTranslations(String type, String name) { repository.findTranslations(type, name); }
 
     public LiveData<List<RoomEntity>> getAllTranslations() {
         return allTranslations;

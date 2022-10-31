@@ -73,5 +73,25 @@
         app:layout_constraintTop_toBottomOf="@+id/recent_search_container"
         app:layout_constraintVertical_bias="0.029"
          />
+        <TextView
+            android:id="@+id/recent_empty"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/rectangle_box"
+            android:fontFamily="@font/roboto_condensed_regular"
+            android:text="There are no recent translations."
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

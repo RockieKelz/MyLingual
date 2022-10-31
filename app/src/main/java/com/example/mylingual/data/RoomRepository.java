@@ -64,10 +64,10 @@ public class RoomRepository {
         typeResults.setValue(roomEntity);
     }
     //finding a searched translation
-    public void findTranslations(String name) {
-        QueryAllOFTYPETranslations task = new QueryAllOFTYPETranslations(dao);
+    public void findTranslations(String type, String name) {
+        QuerySearchTranslations task = new QuerySearchTranslations(dao);
         task.select = this;
-        task.execute(name);
+        task.execute(type, name);
     }
     //add searched translation to results list
     public void addSearchedTranslations(List<RoomEntity> roomEntity){
@@ -154,7 +154,7 @@ public class RoomRepository {
 
         @Override
         protected List<RoomEntity> doInBackground(final String... params) {
-            return (List<RoomEntity>) R_dao.findTranslations(params[0]);
+            return (List<RoomEntity>) R_dao.findTranslations(params[0], params[1]);
         }
         @Override
         public void onPostExecute(List<RoomEntity> resultEntity)
