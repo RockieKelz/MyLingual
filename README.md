@@ -1,4 +1,4 @@
-#MyLingual
+# MyLingual
 MyLingual is a multi-language translation application for android mobile devices. With MyLingual, users can practice and test their knowledge of foreign languages through translations, phrase repetition and review, and word game activities. 
 
 ## Features
