@@ -2,10 +2,10 @@ package com.example.mylingual;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
+import static com.example.mylingual.data.Helper.getTimeStamp;
+
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
@@ -26,7 +26,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mylingual.data.ButtonCase;
-import com.example.mylingual.data.RecentData;
 import com.example.mylingual.data.ViewModal;
 import com.example.mylingual.data.room_db.RoomEntity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -155,12 +154,9 @@ public class HomeFragment extends Fragment {
             startActivity(new Intent(getContext(), LoginActivity.class));
             requireActivity().finish();
         });
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_star, null));
-                saveTranslation("saved", primaryLanguage, originalText, secondaryLanguage, outputBox.getText().toString());
-            }
+        saveButton.setOnClickListener(v -> {
+            saveButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_star, null));
+            saveTranslation("saved", primaryLanguage, originalText, secondaryLanguage, outputBox.getText().toString(), true);
         });
         return HomeView;
     }
@@ -183,7 +179,7 @@ public class HomeFragment extends Fragment {
     private void translateLanguage() {
         translator.translate(originalText).addOnSuccessListener(s -> {
                 outputBox.setText(s);
-                saveTranslation("recent", primaryLanguage, originalText, secondaryLanguage, outputBox.getText().toString());
+                saveTranslation("recent", primaryLanguage, originalText, secondaryLanguage, outputBox.getText().toString(), false);
         }).addOnFailureListener(e -> outputBox.setText(new StringBuilder().append(getString(R.string.error)).append(e.getMessage()).toString()));
     }
     private void buttonCase (ButtonCase buttonCase){
@@ -215,23 +211,10 @@ public class HomeFragment extends Fragment {
                 break;
         }
     }
-    private void saveTranslation() {
-        SQLiteDatabase database = new RecentData (this.getContext()).getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(RecentData.ORIGINAL_TEXT, originalText.toString());
-        values.put(RecentData.PRIMARY_LANG, primaryLanguage.toString());
-        values.put(RecentData.SECONDARY_LANG, secondaryLanguage.toString());
-        values.put(RecentData.TRANSLATED_TEXT, outputBox.getText().toString());
-        database.insert(RecentData.TABLE_NAME, null, values);
-    }
-    private void saveTranslation(String type, String primary, String origin, String second, String translate) {
-        RoomEntity entity = new RoomEntity(type, getTimeStamp(),primary, origin, second, translate);
+
+    private void saveTranslation(String type, String primary, String origin, String second, String translate, Boolean saved) {
+        RoomEntity entity = new RoomEntity(type, getTimeStamp(),primary, origin, second, translate, saved);
         viewModal.insert(entity);
         Toast.makeText(this.getContext(), "Saved Translation to Database" , Toast.LENGTH_SHORT).show();
-    }
-    public String getTimeStamp(){
-        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD'T'HH:mm:ss'Z'");
-        sdf.setTimeZone(TimeZone.getTimeZone("PST"));
-        return sdf.format(new Date());
     }
 }

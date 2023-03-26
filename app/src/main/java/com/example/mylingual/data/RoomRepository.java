@@ -16,6 +16,7 @@ public class RoomRepository {
     private final RoomDAO dao;
     private final LiveData<List<RoomEntity>> allTranslations;
     private final MutableLiveData<List<RoomEntity>> typeResults = new MutableLiveData<>();
+    private final MutableLiveData<List<RoomEntity>> searchResults = new MutableLiveData<>();
 
     //repository constructor
     public RoomRepository(Application application) {
@@ -40,6 +41,10 @@ public class RoomRepository {
         new DeleteAllTranslations(dao).execute();
     }
 
+    public MutableLiveData<List<RoomEntity>> getSearchedTranslations() {
+        return searchResults;
+    }
+
     public LiveData<List<RoomEntity>> getAllTranslations() {
         return allTranslations;
     }
@@ -57,6 +62,16 @@ public class RoomRepository {
     //add the translation to list of that specified type
     public void addSpecifiedTYPETranslations(List<RoomEntity> roomEntity){
         typeResults.setValue(roomEntity);
+    }
+    //finding a searched translation
+    public void findTranslations(String type, String name) {
+        QuerySearchTranslations task = new QuerySearchTranslations(dao);
+        task.select = this;
+        task.execute(type, name);
+    }
+    //add searched translation to results list
+    public void addSearchedTranslations(List<RoomEntity> roomEntity){
+        searchResults.setValue(roomEntity);
     }
 
     // Async Task to insert new translation
@@ -131,5 +146,20 @@ public class RoomRepository {
             select.addSpecifiedTYPETranslations(resultEntity);
         }
     }
+    // Async Task to search for a translation
+    private static class QuerySearchTranslations extends AsyncTask <String, Void, List<RoomEntity>> {
+        private final RoomDAO R_dao;
+        private RoomRepository select = null;
+        private QuerySearchTranslations(RoomDAO dao) { this.R_dao = dao;}
 
+        @Override
+        protected List<RoomEntity> doInBackground(final String... params) {
+            return (List<RoomEntity>) R_dao.findTranslations(params[0], params[1]);
+        }
+        @Override
+        public void onPostExecute(List<RoomEntity> resultEntity)
+        {
+            select.addSearchedTranslations(resultEntity);
+        }
+    }
 }

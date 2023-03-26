@@ -5,30 +5,55 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:elevation="8dp"
+    android:backgroundTint="@color/light_gray"
+    android:elevation="4dp"
     app:cardCornerRadius="8dp">
 
     <LinearLayout
         android:id="@+id/recent_translation_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/recent_primary"
+                android:layout_width="305dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_condensed_bold"
+                android:letterSpacing=".04"
+                android:padding="8dp"
+                android:text="Primary"
+                android:textColor="@color/med_blue"
+                android:textSize="15sp" />
+
+            <ImageButton
+                android:id="@+id/rv_save"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@mipmap/ic_star_out_foreground"
+                android:backgroundTint="@color/black" />
+
+            <ImageButton
+                android:id="@+id/rv_vol"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@mipmap/ic_vol_foreground"
+                android:backgroundTint="@color/black" />
+        </LinearLayout>
         <TextView
-            android:id="@+id/recent_type"
+            android:id="@+id/recent_original"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Type"
-            android:textColor="@color/black"
-            android:textSize="15sp" />
-        <TextView
-            android:id="@+id/recent_primary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="Primary"
+            android:text="Original"
+            android:fontFamily="@font/roboto"
+            android:letterSpacing=".08"
             android:textColor="@color/black"
             android:textSize="15sp" />
         <TextView
@@ -36,16 +61,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
+            android:fontFamily="@font/roboto_condensed_bold"
+            android:letterSpacing=".04"
             android:text="Secondary"
-            android:textColor="@color/black"
-            android:textSize="15sp" />
-        <TextView
-            android:id="@+id/recent_original"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="Original"
-            android:textColor="@color/black"
+            android:textColor="@color/med_blue"
             android:textSize="15sp" />
         <TextView
             android:id="@+id/recent_translated"
@@ -53,6 +72,8 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="Translated"
+            android:fontFamily="@font/roboto"
+            android:letterSpacing=".08"
             android:textColor="@color/black"
             android:textSize="15sp" />
     </LinearLayout>

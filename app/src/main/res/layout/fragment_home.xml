@@ -201,7 +201,7 @@
         android:id="@+id/main_save"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:background="@mipmap/ic_star_out"
+        android:background="@mipmap/ic_star_out_foreground"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@id/main_outbox"
         app:layout_constraintTop_toBottomOf="@id/main_vol" />

@@ -15,6 +15,8 @@ public class ViewModal extends AndroidViewModel {
     private RoomRepository repository;
     private LiveData<List<RoomEntity>> allTranslations;
     private MutableLiveData<List<RoomEntity>> allTypeTranslations;
+    private MutableLiveData<List<RoomEntity>> searchedTranslations;
+
 
     //view modal constructor
     public ViewModal(@NonNull Application application) {
@@ -22,6 +24,7 @@ public class ViewModal extends AndroidViewModel {
         repository = new RoomRepository(application);
         allTranslations = repository.getAllTranslations();
         allTypeTranslations = repository.getAllOFTYPETranslations();
+        searchedTranslations = repository.getSearchedTranslations();
     }
 
     public void insert(RoomEntity entity) {
@@ -43,6 +46,9 @@ public class ViewModal extends AndroidViewModel {
     //for finding either recent or bookmarked translations
     public void findTYPETranslations(String name) { repository.findTYPETranslations(name); }
 
+    //for finding either recent or bookmarked translations
+    public void findTranslations(String type, String name) { repository.findTranslations(type, name); }
+
     public LiveData<List<RoomEntity>> getAllTranslations() {
         return allTranslations;
     }
@@ -51,5 +57,8 @@ public class ViewModal extends AndroidViewModel {
     public MutableLiveData<List<RoomEntity>> getAllOFTYPETranslations() {
         return allTypeTranslations;
     }
-
+    //for retrieving searched translations
+    public MutableLiveData<List<RoomEntity>> getSearchedTranslations() {
+        return searchedTranslations;
+    }
 }

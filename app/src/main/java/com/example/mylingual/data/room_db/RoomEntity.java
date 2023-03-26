@@ -20,14 +20,17 @@ public class RoomEntity {
     public  String SECONDARY_LANG;
     @ColumnInfo (name = "TRANSLATED_TEXT")
     public  String TRANSLATED_TEXT;
+    @ColumnInfo (name = "BOOKMARKED")
+    public  Boolean BOOKMARKED;
 
-    public RoomEntity(String DATA_TYPE,String TIMESTAMP,String PRIMARY_LANG, String ORIGINAL_TEXT, String SECONDARY_LANG, String TRANSLATED_TEXT) {
+    public RoomEntity(String DATA_TYPE,String TIMESTAMP,String PRIMARY_LANG, String ORIGINAL_TEXT, String SECONDARY_LANG, String TRANSLATED_TEXT, Boolean BOOKMARKED) {
         this.DATA_TYPE = DATA_TYPE;
         this.TIMESTAMP = TIMESTAMP;
         this.PRIMARY_LANG = PRIMARY_LANG;
         this.ORIGINAL_TEXT = ORIGINAL_TEXT;
         this.SECONDARY_LANG = SECONDARY_LANG;
         this.TRANSLATED_TEXT = TRANSLATED_TEXT;
+        this.BOOKMARKED = BOOKMARKED;
     }
     public int getId() {
         return id;
@@ -41,7 +44,7 @@ public class RoomEntity {
         return PRIMARY_LANG;
     }
 
-    public void setPRIMARY_LANG(String name) {
+    public void setPRIMARY_LANG(String PRIMARY_LANG) {
         this.PRIMARY_LANG = PRIMARY_LANG;
     }
 
@@ -49,24 +52,28 @@ public class RoomEntity {
         return SECONDARY_LANG;
     }
 
-    public void setSECONDARY_LANG(String name) {
-        this.SECONDARY_LANG = SECONDARY_LANG;
-    }
+    public void setSECONDARY_LANG(String SECONDARY_LANG) { this.SECONDARY_LANG = SECONDARY_LANG; }
 
     public String getOriginal() { return ORIGINAL_TEXT; }
 
-    public void setORIGINAL_TEXT(String name) {
+    public void setORIGINAL_TEXT(String ORIGINAL_TEXT) {
         this.ORIGINAL_TEXT = ORIGINAL_TEXT;
     }
 
     public String getTranslated() { return TRANSLATED_TEXT; }
 
-    public void setTRANSLATED_TEXT(String name) { this.TRANSLATED_TEXT = TRANSLATED_TEXT; }
+    public void setTRANSLATED_TEXT(String TRANSLATED_TEXT) { this.TRANSLATED_TEXT = TRANSLATED_TEXT; }
 
     public String getType() { return DATA_TYPE; }
 
-    public void setDATA_TYPE(String name) {
+    public void setDATA_TYPE(String DATA_TYPE) {
         this.DATA_TYPE = DATA_TYPE;
+    }
+
+    public Boolean getBookmarkedStatus() { return BOOKMARKED; }
+
+    public void setBOOKMARKED(Boolean status) {
+        this.BOOKMARKED = status;
     }
 }
 
