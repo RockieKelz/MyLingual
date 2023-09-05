@@ -23,22 +23,31 @@
         android:theme="@style/Theme.MyLingual.NoActionBar"
         tools:targetApi="31" >
         <activity
+            android:name=".ChangeLanguage"
+            android:exported="false"
+            android:label="@string/title_activity_change_language"
+            android:theme="@style/Theme.MyLingual.NoActionBar.NoActionBar" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".FlashcardsActivity"
-            android:exported="false">
+            android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".GamesActivity"
-            android:exported="false">
+            android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".TextbookActivity"
-            android:exported="false">
+            android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

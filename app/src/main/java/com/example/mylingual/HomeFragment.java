@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,7 @@ public class HomeFragment extends Fragment {
     private ImageButton volButton, saveButton, settingsButton;
     public String primaryLanguage, secondaryLanguage, primaryLangTag, secondaryLangTag, originalText;
     public Translator translator;
+    private LinearLayout langBox1, langBox2;
     private ProgressBar progressBar;
     private ButtonCase activeButton = ButtonCase.Keyboard;
     private ViewModal viewModal;
@@ -70,7 +72,8 @@ public class HomeFragment extends Fragment {
         saveButton = HomeView.findViewById(R.id.main_save);
         settingsButton = HomeView.findViewById(R.id.main_set);
         inputBox = HomeView.findViewById(R.id.main_inbox);
-
+        langBox1 = HomeView.findViewById(R.id.main_lang_1);
+        langBox2 = HomeView.findViewById(R.id.main_lang_2);
         outputBox = HomeView.findViewById(R.id.main_outbox);
         fromLangText = HomeView.findViewById(R.id.main_from_text);
         toLangText = HomeView.findViewById(R.id.main_to_text);
@@ -129,6 +132,7 @@ public class HomeFragment extends Fragment {
             }
             return false;
         });
+        //switch the original statements input
         keyboard.setSelected(true);
         keyboard.setOnClickListener(v -> {
             activeButton = ButtonCase.Keyboard;
@@ -149,15 +153,32 @@ public class HomeFragment extends Fragment {
 
         });
 
+        //go to settings
         settingsButton.setOnClickListener(view -> {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getContext(), LoginActivity.class));
             requireActivity().finish();
         });
+        //saving translations
         saveButton.setOnClickListener(v -> {
             saveButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_star, null));
             saveTranslation("saved", primaryLanguage, originalText, secondaryLanguage, outputBox.getText().toString(), true);
         });
+
+        //switch languages
+        langBox1.setOnClickListener(v -> {
+            Intent i = new Intent(new Intent());
+            i.setClass(getActivity(), ChangeLanguage.class);
+            i.putExtra("buttonClicked", "to");
+            requireActivity().startActivity(i);
+        });
+        langBox2.setOnClickListener(v -> {
+            Intent i = new Intent(new Intent());
+            i.setClass(getActivity(), ChangeLanguage.class);
+            i.putExtra("buttonClicked", "from");
+            requireActivity().startActivity(i);
+        });
+
         return HomeView;
     }
     public void prepareModel() {
