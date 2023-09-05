@@ -25,10 +25,8 @@ public class RecentActivity extends AppCompatActivity {
     private RecentAdapter adapter;
     protected ViewModal viewModel;
     private RoomEntity roomEntity;
-    private String primary;
-    private String second;
-    private String original;
-    private String translate;
+    private String primary, second, original, translate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
