@@ -121,7 +121,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d("Success", "createUserWithEmail:success");
 
                         Intent i = new Intent(RegisterActivity.this,
-                                ChooseLanguage.class);
+                                ChooseLanguageActivity.class);
                         i.putExtra("username", usernameEditText.getText().toString());
                         startActivity(i);
                     }

@@ -36,10 +36,7 @@ import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
-import java.util.TimeZone;
 
 public class HomeFragment extends Fragment {
     private Button keyboard, camera, micButton;
@@ -168,13 +165,13 @@ public class HomeFragment extends Fragment {
         //switch languages
         langBox1.setOnClickListener(v -> {
             Intent i = new Intent(new Intent());
-            i.setClass(getActivity(), ChangeLanguage.class);
+            i.setClass(getActivity(), ChangeLanguageActivity.class);
             i.putExtra("buttonClicked", "to");
             requireActivity().startActivity(i);
         });
         langBox2.setOnClickListener(v -> {
             Intent i = new Intent(new Intent());
-            i.setClass(getActivity(), ChangeLanguage.class);
+            i.setClass(getActivity(), ChangeLanguageActivity.class);
             i.putExtra("buttonClicked", "from");
             requireActivity().startActivity(i);
         });

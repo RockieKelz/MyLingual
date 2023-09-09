@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/light_gray"
+    android:elevation="4dp" >
+
+    <LinearLayout
+        android:id="@+id/change_switch_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/change_first"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_condensed_regular"
+            android:textColor="@color/darker_blue"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:letterSpacing=".09"
+            android:padding="18dp"
+            android:text="language" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.mylingual.data.FBDatabase;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -23,9 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ChooseLanguage extends AppCompatActivity {
-    private FirebaseAuth mAuth;
-
+public class ChooseLanguageActivity extends AppCompatActivity {
     private String userName, primaryLanguage, secondaryLanguage, primaryLangTag, secondaryLangTag;
     private DatabaseReference databaseReference;
     private ArrayList<CharSequence> spinnerList;
@@ -41,7 +38,7 @@ public class ChooseLanguage extends AppCompatActivity {
         Spinner fromSpinner = findViewById(R.id.choice_spin_from);
         Spinner toSpinner = findViewById(R.id.choice_spin_to);
 
-        spinnerList = new ArrayList<>();
+
 
         //get the user's name from the register activity
         Bundle bundle = getIntent().getExtras();
@@ -52,7 +49,6 @@ public class ChooseLanguage extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.spinnier_style);
 
         //initialize firebase instance and get the list of languages
-        mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("languages");
         getLangDataFromFirebase();
 
@@ -97,8 +93,7 @@ public class ChooseLanguage extends AppCompatActivity {
                 primaryLangTag = entry.getKey();
             if (Objects.equals(second, entry.getValue()))
                 secondaryLangTag = entry.getKey();
-        };
-
+        }
     }
 
     //add user's information to firestore
