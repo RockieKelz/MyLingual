@@ -139,6 +139,7 @@ public class ChangeLanguageActivity extends AppCompatActivity {
     private void triggerRecyclerAdapter(){
         //apply the created language variables to the adapter and set the recycler view
         adapter = new ChangeLangAdapter(selectedLanguage, list, position -> {
+            //determine the translating language type from to/from buttons
             String selectedLanguageType;
             if (Objects.equals(buttonClicked, "from"))
             {
@@ -147,12 +148,25 @@ public class ChangeLanguageActivity extends AppCompatActivity {
             } else {
                 selectedLanguageType = "secondary";
                 secondary = list.get(position).getLanguage();
-            }
+            }//store the selected languages info to firestore
             FBDatabase.saveLanguageChange(selectedLanguageType
                     ,list.get(position).getLanguageTag()
                     , list.get(position).getLanguage());
         });
         changeRV.setAdapter(adapter);
+        //make sure the selected language is visible in recyclerview
+        int pos = 0;
+        for (language item: list)
+        {
+            if (Objects.equals(item.getLanguage(), selectedLanguage))
+            {
+                pos = list.indexOf(item);
+            }
+        }
+        if(pos < 5) {
+            pos -=2;
+        }
+        changeRV.scrollToPosition(pos);
     }
 
 }
