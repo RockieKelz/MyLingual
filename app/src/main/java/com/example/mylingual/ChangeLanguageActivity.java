@@ -55,8 +55,14 @@ public class ChangeLanguageActivity extends AppCompatActivity {
                     language lang = new language(snapshot.getKey(), Objects.requireNonNull(snapshot.getValue()).toString());
                     list.add(lang);
                     list.sort(Comparator.comparing(language::getLanguage));
-                }  //apply the created language variables to the recycler view
-                adapter = new ChangeLangAdapter(list);
+                }
+
+                //apply the created language variables to the adapter and set the recycler view
+                adapter = new ChangeLangAdapter(list, new ChangeLangAdapter.clickListener(){
+                    public void languageClicked(int position) {
+
+                    }
+                });
                 changeRV.setAdapter(adapter);
             }
 
