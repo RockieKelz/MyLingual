@@ -166,13 +166,17 @@ public class HomeFragment extends Fragment {
         langBox1.setOnClickListener(v -> {
             Intent i = new Intent(new Intent());
             i.setClass(getActivity(), ChangeLanguageActivity.class);
-            i.putExtra("buttonClicked", "to");
+            i.putExtra("buttonClicked", "from");
+            i.putExtra("primaryLanguage", primaryLanguage);
+            i.putExtra("secondaryLanguage", secondaryLanguage);
             requireActivity().startActivity(i);
         });
         langBox2.setOnClickListener(v -> {
             Intent i = new Intent(new Intent());
             i.setClass(getActivity(), ChangeLanguageActivity.class);
-            i.putExtra("buttonClicked", "from");
+            i.putExtra("buttonClicked", "to");
+            i.putExtra("primaryLanguage", primaryLanguage);
+            i.putExtra("secondaryLanguage", secondaryLanguage);
             requireActivity().startActivity(i);
         });
 

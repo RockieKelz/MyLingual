@@ -10,18 +10,20 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.languagesViewHolder> {
     private final List<language> languageList;
-    private int selectedRow =-1;
-    static String selectedLanguage;
+    private int selectedRow;
+    public String selectedLanguage;
 
     static clickListener clickListener;
 
-    public ChangeLangAdapter(List<language> languageList, clickListener clickListener) {
+    public ChangeLangAdapter(String selectedLanguage, List<language> languageList, clickListener clickListener) {
         this.languageList = languageList;
         ChangeLangAdapter.clickListener = clickListener;
+        this.selectedLanguage = selectedLanguage;
     }
 
     //bind the item views with the data
@@ -40,7 +42,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.la
             public void onClick(View v) {
                 //record selected data and notify observers
                 selectedLanguage = holder.language.getText().toString();
-                selectedRow = holder.getBindingAdapterPosition();
+                selectedRow = holder.getAdapterPosition();
                 clickListener.languageClicked(selectedRow);
                 notifyDataSetChanged();
             }
@@ -48,7 +50,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.la
 
         Context context = holder.cardView.getContext();
         //update the views to reflect selected and deselected data
-        if (selectedLanguage == holder.language.getText().toString()){
+        if (Objects.equals(selectedLanguage, holder.language.getText().toString())){
             holder.language.setTextColor(context.getColor(R.color.lightest_blue_gray));
             holder.cardView.setBackgroundTintList(context.getResources().getColorStateList(R.color.gray_blue, context.getTheme()));
         } else  {
