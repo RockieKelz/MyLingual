@@ -10,6 +10,9 @@ MyLingual is a multi-language translation application for android mobile devices
 * **Recent Translations**
 * **Flashcards**
 * **Word Games**
+
+![MyLingual example](https://github.com/RockieKelz/MyLingual/assets/78999710/64d6504c-dce0-47f1-97d5-63fb6bca8fec)
+
 ## Technologies
 * [Android Studio](https://developer.android.com/studio/)
 * [Google-services](https://developers.google.com/android/guides/overview)
