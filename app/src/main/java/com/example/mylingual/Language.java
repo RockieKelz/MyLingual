@@ -1,16 +1,16 @@
 package com.example.mylingual;
 
-public class language {
-    //variable to store language's tags
+public class Language {
+    //variable to store Language's tags
     private String languageTag;
-    //variable to store language's name
+    //variable to store Language's name
     private String language;
 
     //empty constructor
-    public language() {}
+    public Language() {}
 
     //constructor
-    public language(String languageTag, String language) {
+    public Language(String languageTag, String language) {
         this.languageTag = languageTag;
         this.language = language;
     }

@@ -1,8 +1,11 @@
 package com.example.mylingual;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -13,32 +16,27 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mylingual.data.ButtonCase;
 import com.example.mylingual.data.FBDatabase;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class ChangeLanguageActivity extends AppCompatActivity {
     private ChangeLangAdapter adapter;
-    private String buttonClicked, primary, secondary;
-    private Button to, from;
+    private String buttonClicked, primary, secondary, selectedLanguageType;
+    private Button toButton, fromButton;
     private RecyclerView changeRV;
-    private List<language> list;
+    private List<Language> languageList;
     private String selectedLanguage;
+    private int prevPosition; //used to offset the viewfinder holders displayed position
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,42 +44,42 @@ public class ChangeLanguageActivity extends AppCompatActivity {
         //initialize variables
         TextView close = findViewById(R.id.change_close);
         SearchView search = findViewById(R.id.change_search);
-        to = findViewById(R.id.change_to_button);
-        from = findViewById(R.id.change_from_button);
+        toButton = findViewById(R.id.change_to_button);
+        fromButton = findViewById(R.id.change_from_button);
         changeRV = findViewById(R.id.RVChangeLanguage);
-        list = new ArrayList<>();
+        languageList = new ArrayList<>();
+        prevPosition = -1;
 
         //get the button state and languages from homepage
         Bundle bundle = getIntent().getExtras();
         buttonClicked = bundle.get("buttonClicked").toString();
         primary = bundle.get("primaryLanguage").toString();
         secondary = bundle.get("secondaryLanguage").toString();
-        //draw the buttons based on the passed state
+        //draw the buttons based on the passed through state
         buttonCase();
 
-        //setting layout manager for recycler to adapter class.
+        //set layout manager for recycler to adapter class.
         changeRV.setLayoutManager(new LinearLayoutManager(this));
         changeRV.setHasFixedSize(true);
 
-        //initialize firebase instance and get the language database
+        //initialize firebase instance and get the Language database
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference("languages");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    //create language variables with the obtained languages and tags
-                    language lang = new language(snapshot.getKey(), Objects.requireNonNull(snapshot.getValue()).toString());
-                    list.add(lang);
-                    list.sort(Comparator.comparing(language::getLanguage));
+                    //create Language variables with the obtained languages and tags and add them to the languages list
+                    Language lang = new Language(snapshot.getKey(), Objects.requireNonNull(snapshot.getValue()).toString());
+                    languageList.add(lang);
+                    languageList.sort(Comparator.comparing(com.example.mylingual.Language::getLanguage));
                 }
-
-                //apply the created language variables to the adapter and set the recycler view
+                //apply the created Language variables to the adapter and set the recycler view
                 triggerRecyclerAdapter();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, databaseError.getMessage());
             }
         });
 
@@ -91,82 +89,137 @@ public class ChangeLanguageActivity extends AppCompatActivity {
             Intent i = new Intent(ChangeLanguageActivity.this, MainActivity.class);
             startActivity(i);
         });
-        //set selecting language to "to"
-        to.setOnClickListener(v -> {
+        //set selecting Language to the "to" value
+        toButton.setOnClickListener(v -> {
             buttonClicked = "to";
             buttonCase();
             triggerRecyclerAdapter();
         });
-        //set selecting language to "from"
-        from.setOnClickListener(v -> {
+        //set selecting Language to the "from" value
+        fromButton.setOnClickListener(v -> {
             buttonClicked = "from";
             buttonCase();
             triggerRecyclerAdapter();
         });
 
+        //get text from search box and look for it in the list of languages
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (query.length()>=1){
+                    searchLanguages(query);
+                };
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText.length()>1)
+                {
+                    searchLanguages(newText);
+                };
+                return false;
+            }
+        });
     }
+
     private void buttonCase(){
         switch (buttonClicked)
         {
+            //highlight the to button if the translating language is selected
             case "to":
-                Drawable buttonDrawable = to.getBackground();
+                Drawable buttonDrawable = toButton.getBackground();
                 buttonDrawable = DrawableCompat.wrap(buttonDrawable);
                 DrawableCompat.setTint(buttonDrawable, getColor(R.color.dark_blue));
-                to.setBackground(buttonDrawable);
-                to.setTextColor(getColor(R.color.light_gray));
-                buttonDrawable = from.getBackground();
+                toButton.setBackground(buttonDrawable);
+                toButton.setTextColor(getColor(R.color.light_gray));
+                buttonDrawable = fromButton.getBackground();
                 buttonDrawable = DrawableCompat.wrap(buttonDrawable);
                 DrawableCompat.setTint(buttonDrawable, getColor(R.color.light_gray));
-                from.setBackground(buttonDrawable);
-                from.setTextColor(getColor(R.color.dark_blue));
+                fromButton.setBackground(buttonDrawable);
+                fromButton.setTextColor(getColor(R.color.dark_blue));
+                //pass the secondary language into the selected language variable
                 selectedLanguage = secondary;
                 break;
+            //highlight the from button if the translated language is selected
             case "from":
-                buttonDrawable = to.getBackground();
+                buttonDrawable = toButton.getBackground();
                 buttonDrawable = DrawableCompat.wrap(buttonDrawable);
                 DrawableCompat.setTint(buttonDrawable, getColor(R.color.light_gray));
-                to.setBackground(buttonDrawable);
-                to.setTextColor(getColor(R.color.dark_blue));
-                buttonDrawable = from.getBackground();
+                toButton.setBackground(buttonDrawable);
+                toButton.setTextColor(getColor(R.color.dark_blue));
+                buttonDrawable = fromButton.getBackground();
                 buttonDrawable = DrawableCompat.wrap(buttonDrawable);
                 DrawableCompat.setTint(buttonDrawable, getColor(R.color.dark_blue));
-                from.setBackground(buttonDrawable);
-                from.setTextColor(getColor(R.color.light_gray));
+                fromButton.setBackground(buttonDrawable);
+                fromButton.setTextColor(getColor(R.color.light_gray));
+                //pass the primary language into the selected language variable
                 selectedLanguage = primary;
                 break;
         }
     }
+
     private void triggerRecyclerAdapter(){
-        //apply the created language variables to the adapter and set the recycler view
-        adapter = new ChangeLangAdapter(selectedLanguage, list, position -> {
-            //determine the translating language type from to/from buttons
-            String selectedLanguageType;
-            if (Objects.equals(buttonClicked, "from"))
-            {
-                selectedLanguageType = "primary";
-                primary = list.get(position).getLanguage();
-            } else {
-                selectedLanguageType = "secondary";
-                secondary = list.get(position).getLanguage();
-            }//store the selected languages info to firestore
-            FBDatabase.saveLanguageChange(selectedLanguageType
-                    ,list.get(position).getLanguageTag()
-                    , list.get(position).getLanguage());
-        });
-        changeRV.setAdapter(adapter);
-        //make sure the selected language is visible in recyclerview
-        int pos = 0;
-        for (language item: list)
+        int selectedPosition =0;
+        //find the index of selected language from the languages list
+        for (Language item: languageList)
         {
             if (Objects.equals(item.getLanguage(), selectedLanguage))
             {
-                pos = list.indexOf(item);
+                selectedPosition = languageList.indexOf(item);
             }
         }
-        if(pos < 5) {
-            pos -=2;
+        //apply the created Language variables to the adapter and set the recycler view
+        adapter = new ChangeLangAdapter(selectedLanguage, languageList, selectedPosition, this::sendSelectedLangDataToFirestore);
+        changeRV.setAdapter(adapter);
+
+        //make sure the selected Language is visible in recyclerview
+        if(selectedPosition < 5) {
+            selectedPosition -=2;
         }
-        changeRV.scrollToPosition(pos);
+        changeRV.scrollToPosition(selectedPosition);
     }
 
+    private void sendSelectedLangDataToFirestore(int position) {
+        //determine the translating Language type from to/from buttons
+        if (Objects.equals(buttonClicked, "from"))
+        {
+            selectedLanguageType = "primary";
+            primary = languageList.get(position).getLanguage();
+        } else {
+            selectedLanguageType = "secondary";
+            secondary = languageList.get(position).getLanguage();
+        }//store the selected languages info to firestore
+        FBDatabase.saveLanguageChange(selectedLanguageType
+                , languageList.get(position).getLanguageTag()
+                , languageList.get(position).getLanguage());
+    }
+
+    private void searchLanguages(String string){
+        int index =-1;
+        //look for the passed string in the list of languages
+        for (Language item: languageList)
+        {
+            index++;
+            //if the string matches, pass the language data to corresponding "selected" variables
+            if (Objects.equals(item.getLanguage().toLowerCase(), string.toLowerCase()))
+            {
+                selectedLanguage = item.getLanguage();
+                adapter.setSelectedRow(index);
+                //send the data at the index position to firestore
+                sendSelectedLangDataToFirestore(index);
+                //update the adapter to show the searched language
+                adapter.notifyItemChanged(index);
+                if (prevPosition == -1) {
+                    prevPosition = index;
+                }
+                if(Math.abs(index- prevPosition) > 5) {
+                    index -=2;
+                }
+                changeRV.scrollToPosition(index);
+                prevPosition = index;
+                break;
+            }
+        }
+    }
 }

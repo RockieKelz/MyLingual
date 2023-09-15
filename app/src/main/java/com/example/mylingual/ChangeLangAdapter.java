@@ -10,20 +10,19 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.Objects;
 
 
 public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.languagesViewHolder> {
-    private final List<language> languageList;
+    private final List<Language> languageList;
     private int selectedRow;
     public String selectedLanguage;
-
     static clickListener clickListener;
 
-    public ChangeLangAdapter(String selectedLanguage, List<language> languageList, clickListener clickListener) {
+    public ChangeLangAdapter(String selectedLanguage, List<Language> languageList, int selectedRow, clickListener clickListener) {
         this.languageList = languageList;
         ChangeLangAdapter.clickListener = clickListener;
         this.selectedLanguage = selectedLanguage;
+        this.selectedRow = selectedRow;
     }
 
     //bind the item views with the data
@@ -32,8 +31,8 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.la
     onBindViewHolder(@NonNull languagesViewHolder holder,
                      int position)
     {
-        //get the language data and apply the text to the view
-        final language lang= languageList.get(position);
+        //get the Language data and apply the text to the view
+        final Language lang= languageList.get(position);
         holder.language.setText(lang.getLanguage());
 
         //set up a click listener for row selection
@@ -50,10 +49,10 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.la
 
         Context context = holder.cardView.getContext();
         //update the views to reflect selected and deselected data
-        if (Objects.equals(selectedLanguage, holder.language.getText().toString())){
+        if (selectedRow == holder.getAdapterPosition()){
             holder.language.setTextColor(context.getColor(R.color.lightest_blue_gray));
             holder.cardView.setBackgroundTintList(context.getResources().getColorStateList(R.color.gray_blue, context.getTheme()));
-        } else  {
+        } else {
             holder.language.setTextColor(context.getColor(R.color.darker_blue));
             holder.cardView.setBackgroundTintList(context.getResources().getColorStateList(R.color.light_gray, context.getTheme()));
         }
@@ -81,8 +80,12 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.la
     public int getItemCount() {
         return languageList.size();
     }
+
     //return the selected position
-    public int getSelectedRow(){ return selectedRow;}
+    public void setSelectedRow(int selectedRow){
+        this.selectedRow = selectedRow;
+    }
+
     //passing the position with the on click
     public interface clickListener {
         void languageClicked(int position);

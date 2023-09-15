@@ -69,7 +69,7 @@ public class ChooseLanguageActivity extends AppCompatActivity {
         });
     }
 
-    //add every database language to the spinner's list
+    //add every database Language to the spinner's list
     public void getLangDataFromFirebase() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override

@@ -90,7 +90,7 @@ public class HomeFragment extends Fragment {
             secondaryLanguage = documentSnapshot.getString("secondaryLanguage");
             secondaryLangTag = documentSnapshot.getString("secondaryLangTag");
 
-            //set the text for to/from language boxes
+            //set the text for to/from Language boxes
             toLangText.setText(secondaryLanguage);
             fromLangText.setText(primaryLanguage);
             if( getArguments() != null) {
