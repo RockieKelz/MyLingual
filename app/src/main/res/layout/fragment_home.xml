@@ -36,13 +36,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/main_inbox"
+        app:layout_constraintBottom_toTopOf="@+id/main_input_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_logo">
-
         <LinearLayout
             android:id="@+id/main_lang_1"
             android:layout_width="150dp"
@@ -97,35 +94,42 @@
         </LinearLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/main_input_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/light_gray"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:layout_marginLeft="4pt"
+        android:layout_marginRight="4pt"
+        app:layout_constraintBottom_toTopOf="@+id/main_button_contain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_lang_contain"
+        >
     <EditText
         android:id="@+id/main_inbox"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="4pt"
-        android:layout_marginRight="4pt"
-        android:background="@color/light_gray"
+        android:layout_height="155dp"
         android:fontFamily="@font/pt_sans"
         android:gravity="top|start"
         android:hint="Enter text"
-        android:autofillHints="Enter text"
-        android:inputType="text"
+        android:background="@null"
+        android:inputType="textMultiLine"
+        android:scrollHorizontally="false"
         android:keepScreenOn="true"
         android:letterSpacing=".08"
         android:minHeight="180dp"
         android:maxHeight="300dp"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="10dp"
         android:textColor="@color/blue"
         android:textColorHint="@color/gray"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:clickable="true"
-        app:layout_constraintBottom_toTopOf="@+id/main_button_contain"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.653"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_lang_contain" />
+        android:clickable="true" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/main_button_contain"
@@ -133,11 +137,12 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/main_outbox"
+        app:layout_constraintBottom_toTopOf="@+id/main_translation_contain"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.781"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_inbox"
-        app:layout_constraintVertical_bias="0.308">
+        app:layout_constraintTop_toBottomOf="@+id/main_input_container"
+        app:layout_constraintVertical_bias="0.43">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_mic_btn"
@@ -145,8 +150,7 @@
             android:layout_height="55dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/round_button"
-            android:foreground="@mipmap/ic_mic_foreground"
-            />
+            android:foreground="@mipmap/ic_mic_foreground" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_keyboard_btn"
@@ -155,56 +159,74 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/round_button"
             android:foreground="@mipmap/ic_keyboard_foreground"
-            android:foregroundTint="@color/dark_blue"/>
+            android:foregroundTint="@color/dark_blue" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_camera_btn"
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:background="@drawable/round_button"
-            android:foreground="@mipmap/ic_camera_foreground"
-            />
+            android:foreground="@mipmap/ic_camera_foreground" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <TextView
-        android:id="@+id/main_outbox"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/main_translation_contain"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="@color/light_gray"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
         android:layout_marginLeft="4pt"
         android:layout_marginRight="4pt"
-        android:background="@color/light_gray"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_button_contain"
+        >
+    <TextView
+        android:id="@+id/main_outbox"
+        android:layout_width="295dp"
+        android:layout_height="155dp"
+        android:maxLines="10"
+        android:ellipsize="end"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/main_translated_controls_contain"
         android:fontFamily="@font/pt_sans"
         android:gravity="top|start"
         android:letterSpacing=".08"
         android:minHeight="180dp"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="10dp"
+        android:maxHeight="300dp"
         android:textColor="@color/blue"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_button_contain" />
+        android:keepScreenOn="true"
+        />
 
-    <ImageButton
-        android:id="@+id/main_vol"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="@mipmap/ic_vol_foreground"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@id/main_outbox"
-        app:layout_constraintTop_toTopOf="@id/main_outbox"/>
-
-    <ImageButton
-        android:id="@+id/main_save"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="@mipmap/ic_star_out_foreground"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@id/main_outbox"
-        app:layout_constraintTop_toBottomOf="@id/main_vol" />
+        <LinearLayout
+            android:id="@+id/main_translated_controls_contain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="-45dp"
+            app:layout_constraintEnd_toEndOf="@id/main_translation_contain"
+            app:layout_constraintTop_toTopOf="@id/main_translation_contain">
+            <ImageButton
+                android:id="@+id/main_vol"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@mipmap/ic_vol_foreground"
+                android:visibility="invisible"
+                />
+            <ImageButton
+                android:id="@+id/main_save"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@mipmap/ic_star_out_foreground"
+                android:visibility="invisible"/>
+            </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
     <ProgressBar
         android:id="@+id/loading_model"
         android:layout_width="wrap_content"

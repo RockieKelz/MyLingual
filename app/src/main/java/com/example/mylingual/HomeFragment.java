@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.google.mlkit.nl.translate.TranslatorOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -50,6 +52,7 @@ public class HomeFragment extends Fragment {
     private ProgressBar progressBar;
     private ButtonCase activeButton = ButtonCase.Keyboard;
     private ViewModal viewModal;
+    TextToSpeech textToSpeech;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +79,7 @@ public class HomeFragment extends Fragment {
         toLangText = HomeView.findViewById(R.id.main_to_text);
         progressBar =(ProgressBar) HomeView.findViewById(R.id.loading_model);
         progressBar.setMax(100);
-        progressBar.setProgress(0 );
+        progressBar.setProgress(0);
 
         viewModal = new ViewModelProvider(this).get(ViewModal.class);
 
@@ -157,6 +160,25 @@ public class HomeFragment extends Fragment {
         saveButton.setOnClickListener(v -> {
             saveButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_star, null));
             saveTranslation("saved", primaryLanguage, originalText, secondaryLanguage, outputBox.getText().toString(), true);
+        });
+        textToSpeech =  new TextToSpeech(volButton.getContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+
+                // if No error is found then only it will run
+                if(i!=TextToSpeech.ERROR){
+                    // To Choose language of speech
+                    textToSpeech.setLanguage(Locale.forLanguageTag(secondaryLangTag));
+                }
+            }
+        });
+
+        volButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                textToSpeech.speak(outputBox.getText().toString(),TextToSpeech.QUEUE_FLUSH,null);
+            }
         });
         return HomeView;
     }
