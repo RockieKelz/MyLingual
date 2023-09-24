@@ -33,8 +33,12 @@ public class RoomRepository {
         new Update(dao).execute(entity);
     }
 
-    public void delete(RoomEntity entity) {
+    public void deleteSavedTranslation(RoomEntity entity) {
         new DeleteTranslation(dao).execute(entity);
+    }
+
+    public void deleteTranslationFromDatabase(String entity) {
+        new QueryToDeleteTranslations(dao).execute(entity);
     }
 
     public void deleteAllTranslations() {
@@ -59,6 +63,7 @@ public class RoomRepository {
         task.select = this;
         task.execute(name);
     }
+
     //add the translation to list of that specified type
     public void addSpecifiedTYPETranslations(List<RoomEntity> roomEntity){
         typeResults.setValue(roomEntity);
@@ -112,7 +117,22 @@ public class RoomRepository {
 
         @Override
         protected Void doInBackground(RoomEntity... entities) {
-            dao.delete(entities[0]);
+            dao.deleteBookmarked(entities[0]);
+            return null;
+        }
+    }
+
+    // Async Task to search for a translation and remove from database
+    private static class QueryToDeleteTranslations extends AsyncTask <String, Void, List<RoomEntity>> {
+        private final RoomDAO dao;
+
+        private QueryToDeleteTranslations(RoomDAO dao) {
+            this.dao = dao;
+        }
+
+        @Override
+        protected List<RoomEntity> doInBackground(String... entities) {
+            dao.deleteTranslation(entities[0]);
             return null;
         }
     }
@@ -146,6 +166,7 @@ public class RoomRepository {
             select.addSpecifiedTYPETranslations(resultEntity);
         }
     }
+
     // Async Task to search for a translation
     private static class QuerySearchTranslations extends AsyncTask <String, Void, List<RoomEntity>> {
         private final RoomDAO R_dao;

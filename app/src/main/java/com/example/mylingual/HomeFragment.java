@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment {
     private ProgressBar progressBar;
     private ButtonCase activeButton = ButtonCase.Keyboard;
     private ViewModal viewModal;
-    TextToSpeech textToSpeech;
+    private TextToSpeech textToSpeech;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

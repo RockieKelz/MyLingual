@@ -3,6 +3,7 @@ package com.example.mylingual;
 import static com.example.mylingual.data.Helper.getTimeStamp;
 
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,16 +17,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mylingual.data.ViewModal;
 import com.example.mylingual.data.room_db.RoomEntity;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.Locale;
 
 public class RecentActivity extends AppCompatActivity {
     private RecentAdapter adapter;
     protected ViewModal viewModel;
     private RoomEntity roomEntity;
     private String primary, second, original, translate;
+    private TextToSpeech textToSpeech;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,7 @@ public class RecentActivity extends AppCompatActivity {
         TextView close = findViewById(R.id.recent_close);
         TextView noRecent = findViewById(R.id.recent_empty);
         SearchView search = findViewById(R.id.recent_search);
+
         //initializing the recycler variable
         RecyclerView recentRV = findViewById(R.id.RVRecentTranslations);
 
@@ -69,7 +70,7 @@ public class RecentActivity extends AppCompatActivity {
             public void unBookOnClick(View v, int position){
                 getTranslationFromRecycler(position);
                 RoomEntity deletingEntity = new RoomEntity("saved", getTimeStamp(),primary, original, second, translate, false);
-                viewModel.delete(deletingEntity);
+                viewModel.deleteSavedTranslation(deletingEntity);
                 roomEntity.setBOOKMARKED(false);
                 viewModel.update(roomEntity);
                 Toast.makeText(RecentActivity.this, "Translation Removed from Database" , Toast.LENGTH_SHORT).show();
@@ -78,6 +79,26 @@ public class RecentActivity extends AppCompatActivity {
             @Override
             public void volumeOnClick(View v, int position) {
                 //viewModel.deleteAllTranslations();
+                getTranslationFromRecycler(position);
+                textToSpeech =  new TextToSpeech(v.getContext(), new TextToSpeech.OnInitListener() {
+                    @Override
+                    public void onInit(int i) {
+
+                        // if No error is found then only it will run
+                        if(i!=TextToSpeech.ERROR){
+                            Locale[] locale_list = Locale.getAvailableLocales();
+                            for (Locale locale : locale_list)
+                            {
+                                // To Choose language of speech
+                                if (locale.getDisplayLanguage().equalsIgnoreCase(second)){
+                                    textToSpeech.setLanguage(Locale.forLanguageTag(locale.getLanguage()));
+                                    textToSpeech.speak(translate,TextToSpeech.QUEUE_FLUSH,null);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
             }
         });
 

@@ -34,14 +34,16 @@ public class ViewModal extends AndroidViewModel {
     public void update(RoomEntity entity) {
         repository.update(entity);
     }
-
-    public void delete(RoomEntity entity) {
-        repository.delete(entity);
+    //delete translation from saved database
+    public void deleteSavedTranslation(RoomEntity entity) {
+        repository.deleteSavedTranslation(entity);
     }
 
     public void deleteAllTranslations() {
         repository.deleteAllTranslations();
     }
+
+    public void deleteTranslations(String entity) { repository.deleteTranslationFromDatabase(entity); }
 
     //for finding either recent or bookmarked translations
     public void findTYPETranslations(String name) { repository.findTYPETranslations(name); }

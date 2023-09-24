@@ -1,7 +1,6 @@
 package com.example.mylingual.data.room_db;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -22,7 +21,11 @@ public interface RoomDAO {
 
     //delete specific row in database.
     @Delete
-    void delete(RoomEntity e);
+    void deleteBookmarked(RoomEntity e);
+
+    //looks for specific translation to delete
+    @Query("DELETE FROM translations WHERE ORIGINAL_TEXT = :original")
+    void deleteTranslation(String original);
 
     // delete all data from database.
     @Query("DELETE FROM Translations")
@@ -39,4 +42,6 @@ public interface RoomDAO {
     //looks for specific translation data type
     @Query("SELECT * FROM translations WHERE DATA_TYPE = :dataType AND  ORIGINAL_TEXT LIKE '%' || :text || '%' OR TRANSLATED_TEXT LIKE '%' || :text || '%' ORDER BY TIMESTAMP DESC")
     List<RoomEntity> findTranslations(String dataType, String text);
+
+
 }
